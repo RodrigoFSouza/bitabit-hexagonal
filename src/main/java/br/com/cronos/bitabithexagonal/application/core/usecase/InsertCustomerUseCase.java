@@ -4,15 +4,18 @@ import br.com.cronos.bitabithexagonal.application.core.domain.Customer;
 import br.com.cronos.bitabithexagonal.application.ports.in.InsertCustomerInputPort;
 import br.com.cronos.bitabithexagonal.application.ports.out.FindAddressByZipCodeOutputPort;
 import br.com.cronos.bitabithexagonal.application.ports.out.InsertCustomerOutputPort;
+import br.com.cronos.bitabithexagonal.application.ports.out.SendCpfForValidationOutputPort;
 
 public class InsertCustomerUseCase implements InsertCustomerInputPort {
 
     private final FindAddressByZipCodeOutputPort findAddressByZipCodeOutputPort;
     private final InsertCustomerOutputPort  insertCustomerOutputPort;
+    private final SendCpfForValidationOutputPort sendCpfForValidationOutputPort;
 
-    public InsertCustomerUseCase(FindAddressByZipCodeOutputPort findAddressByZipCodeOutputPort, InsertCustomerOutputPort insertCustomerOutputPort) {
+    public InsertCustomerUseCase(FindAddressByZipCodeOutputPort findAddressByZipCodeOutputPort, InsertCustomerOutputPort insertCustomerOutputPort, SendCpfForValidationOutputPort sendCpfForValidationOutputPort) {
         this.findAddressByZipCodeOutputPort = findAddressByZipCodeOutputPort;
         this.insertCustomerOutputPort = insertCustomerOutputPort;
+        this.sendCpfForValidationOutputPort = sendCpfForValidationOutputPort;
     }
 
     @Override
@@ -21,5 +24,6 @@ public class InsertCustomerUseCase implements InsertCustomerInputPort {
 
         customer.addAddress(address);
         insertCustomerOutputPort.insert(customer);
+        sendCpfForValidationOutputPort.send(customer.getCpf());
     }
 }
