@@ -5,6 +5,7 @@ import br.com.cronos.bitabithexagonal.adapters.in.controller.request.CustomerReq
 import br.com.cronos.bitabithexagonal.adapters.in.controller.response.CustomerResponse;
 import br.com.cronos.bitabithexagonal.application.ports.in.FindCustomerByIdInputPort;
 import br.com.cronos.bitabithexagonal.application.ports.in.InsertCustomerInputPort;
+import br.com.cronos.bitabithexagonal.application.ports.in.UpdateCustomerInputPort;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ public class CustomerController {
 
     private final InsertCustomerInputPort insertCustomerInputPort;
     private final FindCustomerByIdInputPort findCustomerByIdInputPort;
+    private final UpdateCustomerInputPort updateCustomerInputPort;
     private final CustomerMapper customerMapper;
 
     @PostMapping
@@ -32,4 +34,13 @@ public class CustomerController {
         var customerResponse = customerMapper.toCustomerResponse(customer);
         return ResponseEntity.ok().body(customerResponse);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(@PathVariable final String id, @Valid @RequestBody CustomerRequest customerRequest) {
+        var customer = customerMapper.toCustomer(customerRequest);
+        customer.setId(id);
+        updateCustomerInputPort.update(customer, customerRequest.getZipCode());
+        return ResponseEntity.noContent().build();
+    }
+
 }
