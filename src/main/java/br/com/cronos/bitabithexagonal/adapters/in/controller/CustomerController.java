@@ -3,6 +3,7 @@ package br.com.cronos.bitabithexagonal.adapters.in.controller;
 import br.com.cronos.bitabithexagonal.adapters.in.controller.mapper.CustomerMapper;
 import br.com.cronos.bitabithexagonal.adapters.in.controller.request.CustomerRequest;
 import br.com.cronos.bitabithexagonal.adapters.in.controller.response.CustomerResponse;
+import br.com.cronos.bitabithexagonal.application.ports.in.DeleteCustomerByIdInputPort;
 import br.com.cronos.bitabithexagonal.application.ports.in.FindCustomerByIdInputPort;
 import br.com.cronos.bitabithexagonal.application.ports.in.InsertCustomerInputPort;
 import br.com.cronos.bitabithexagonal.application.ports.in.UpdateCustomerInputPort;
@@ -19,6 +20,7 @@ public class CustomerController {
     private final InsertCustomerInputPort insertCustomerInputPort;
     private final FindCustomerByIdInputPort findCustomerByIdInputPort;
     private final UpdateCustomerInputPort updateCustomerInputPort;
+    private final DeleteCustomerByIdInputPort deleteCustomerByIdInputPort;
     private final CustomerMapper customerMapper;
 
     @PostMapping
@@ -40,6 +42,12 @@ public class CustomerController {
         var customer = customerMapper.toCustomer(customerRequest);
         customer.setId(id);
         updateCustomerInputPort.update(customer, customerRequest.getZipCode());
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable final String id) {
+        deleteCustomerByIdInputPort.delete(id);
         return ResponseEntity.noContent().build();
     }
 
